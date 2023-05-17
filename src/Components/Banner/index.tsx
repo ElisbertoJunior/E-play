@@ -1,10 +1,11 @@
 import Button from '../Button'
 import Tag from '../Tag'
 import { Image, Prices, Title } from './styles'
+import spider from '../../images/banner-homem-aranha.png'
 
 const Banner = () => {
   return (
-    <Image style={{ backgroundImage: 'url("images/banner-homem-aranha.png")' }}>
+    <Image style={{ backgroundImage: `url(${spider})` }}>
       <div className="container">
         <Tag size="big">Destaque do dia</Tag>
         <div>
