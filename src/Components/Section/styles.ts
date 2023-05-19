@@ -3,7 +3,7 @@ import { Props } from '.'
 import { colors } from '../../styles'
 import { Card } from '../Product/styles'
 
-export const Container = styled.section<Omit<Props, 'title' | 'games'>>`
+export const Container = styled.section<Omit<Props, 'title' | 'children'>>`
   padding: 32px 0;
   background-color: ${(props) =>
     props.background === 'black' ? colors.BlackColor : colors.GreyColor};
@@ -12,16 +12,15 @@ export const Container = styled.section<Omit<Props, 'title' | 'games'>>`
     background-color: ${(props) =>
       props.background === 'black' ? colors.GreyColor : colors.BlackColor};
   }
+
+  p {
+    font-size: 14px;
+    line-height: 22px;
+    max-width: 640px;
+  }
 `
 export const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;
-`
-
-export const List = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-
-  margin-top: 40px;
+  margin-bottom: 40px;
 `
