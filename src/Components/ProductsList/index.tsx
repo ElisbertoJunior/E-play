@@ -1,19 +1,13 @@
 import Product from '../Product'
 import { Container, List, Title } from './styles'
 import { Game } from '../../pages/Home'
+import { priceFormat } from '../../utils'
 
 export type Props = {
   title: string
   background: 'gray' | 'black'
   games: Game[]
   id?: string
-}
-
-export const priceFormat = (price = 0) => {
-  return new Intl.NumberFormat('pt-br', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(price)
 }
 
 const ProductsList = ({ title, background, games, id }: Props) => {

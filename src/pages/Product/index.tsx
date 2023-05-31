@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+
 import Gallery from '../../Components/Gallery'
 import Hero from '../../Components/Hero'
 import Section from '../../Components/Section'

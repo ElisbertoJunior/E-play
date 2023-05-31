@@ -27,6 +27,7 @@ export const Action = styled.div`
 
 export const Item = styled.li`
   position: relative;
+  cursor: zoom-in;
 
   > img {
     border: 2px solid ${colors.whiteColor};
@@ -39,7 +40,6 @@ export const Item = styled.li`
   &:hover {
     ${Action} {
       opacity: 1;
-      cursor: pointer;
       transition: opacity 0.6s ease;
     }
   }

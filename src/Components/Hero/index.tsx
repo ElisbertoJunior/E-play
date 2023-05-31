@@ -2,7 +2,7 @@ import { Banner, Infos } from './styles'
 import Tag from '../Tag'
 import Button from '../Button'
 import { Game } from '../../pages/Home'
-import { priceFormat } from '../ProductsList'
+import { priceFormat } from '../../utils'
 import { useDispatch } from 'react-redux'
 import { add, open } from '../../store/reducers/cart'
 

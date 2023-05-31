@@ -10,6 +10,7 @@ export const Card = styled(Link)`
   position: relative;
   color: ${colors.whiteColor};
   display: block;
+  height: 100%;
 
   img {
     display: block;

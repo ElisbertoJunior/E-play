@@ -20,17 +20,20 @@ const Product = ({
   image,
   id
 }: Props) => {
-  const getDescription = (description: string) => {
-    if (description.length > 100) {
-      return description.slice(0, 97) + '...'
+  const getDescription = (text: string) => {
+    if (text.length > 100) {
+      return text.slice(0, 97) + '...'
     }
 
-    return description
+    return text
   }
 
   return (
-    <Card to={`/product/${id}`}>
-      <img src={image} />
+    <Card
+      title={`Clique aqui para ver mais detalhes do jogo ${title}`}
+      to={`/product/${id}`}
+    >
+      <img src={image} alt={title} />
       <Infos>
         {infos.map((info) => (
           <Tag key={info}>{info}</Tag>

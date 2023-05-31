@@ -50,6 +50,12 @@ export const NavMobile = styled.nav`
   &.is-open {
     display: block;
   }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    &.is-open {
+      display: none;
+    }
+  }
 `
 
 export const LinkItem = styled.li`
