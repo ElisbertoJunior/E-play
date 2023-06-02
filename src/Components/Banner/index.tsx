@@ -5,11 +5,12 @@ import { priceFormat } from '../../utils'
 import { useGetFeaturedGameQuery } from '../../services/api'
 
 import { Image, Prices, Title } from './styles'
+import Loader from '../Loader'
 
 const Banner = () => {
   const { data: game } = useGetFeaturedGameQuery()
 
-  if (!game) return <h3>carregando...</h3>
+  if (!game) return <Loader />
 
   return (
     <Image style={{ backgroundImage: `url(${game.media.cover})` }}>

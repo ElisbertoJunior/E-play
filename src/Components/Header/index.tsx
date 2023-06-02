@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { HashLink } from 'react-router-hash-link'
 import { useDispatch, useSelector } from 'react-redux'
 import {

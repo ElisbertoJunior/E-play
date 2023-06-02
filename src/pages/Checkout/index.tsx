@@ -3,6 +3,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
+import InputMask from 'react-input-mask'
 
 import Button from '../../Components/Button'
 import Card from '../../Components/Card'
@@ -25,7 +26,7 @@ type Installment = {
 const Checkout = () => {
   const [payWithCard, setPayWithCard] = useState(false)
   const { items } = useSelector((state: RootReducer) => state.cart)
-  const [purchase, { data, isSuccess }] = usePurchaseMutation()
+  const [purchase, { data, isSuccess, isLoading }] = usePurchaseMutation()
   const [installments, setInstallments] = useState<Installment[]>([])
 
   const totalPrice = getTotalPrice(items)
@@ -159,7 +160,7 @@ const Checkout = () => {
   }
   return (
     <div className="container">
-      {isSuccess ? (
+      {isSuccess && data ? (
         <Card title="Muito obrigado">
           <>
             <p>
@@ -223,7 +224,7 @@ const Checkout = () => {
                 </InputGroup>
                 <InputGroup>
                   <label htmlFor="cpf">CPF</label>
-                  <input
+                  <InputMask
                     type="text"
                     id="cpf"
                     name="cpf"
@@ -231,6 +232,7 @@ const Checkout = () => {
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     className={checkInputHasError('cpf') ? 'error' : ''}
+                    mask="999.999.999-99"
                   />
                 </InputGroup>
               </Row>
@@ -310,13 +312,14 @@ const Checkout = () => {
                     </InputGroup>
                     <InputGroup>
                       <label htmlFor="cpfCardOwner">CPF do títular</label>
-                      <input
+                      <InputMask
                         type="text"
                         id="cpfCardOwner"
                         name="cpfCardOwner"
                         value={form.values.cpfCardOwner}
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
+                        mask="999.999.999-99"
                         className={
                           checkInputHasError('cpfCardOwner') ? 'error' : ''
                         }
@@ -427,8 +430,12 @@ const Checkout = () => {
               )}
             </div>
           </Card>
-          <Button type="submit" title="Clique para finallizar compra">
-            Finalizar compra
+          <Button
+            type="submit"
+            title="Clique para finallizar compra"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Finalizando compra...' : 'Finalizar compra'}
           </Button>
         </form>
       )}
