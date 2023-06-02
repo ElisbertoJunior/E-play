@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import InputMask from 'react-input-mask'
 
@@ -13,6 +13,7 @@ import creditCard from '../../images/credit-card 1.png'
 
 import { usePurchaseMutation } from '../../services/api'
 import { RootReducer } from '../../store'
+import { clear } from '../../store/reducers/cart'
 
 import { InputGroup, Row, TabButton } from './styles'
 import { getTotalPrice, priceFormat } from '../../utils'
@@ -28,6 +29,7 @@ const Checkout = () => {
   const { items } = useSelector((state: RootReducer) => state.cart)
   const [purchase, { data, isSuccess, isLoading }] = usePurchaseMutation()
   const [installments, setInstallments] = useState<Installment[]>([])
+  const dispatch = useDispatch()
 
   const totalPrice = getTotalPrice(items)
 
@@ -86,7 +88,7 @@ const Checkout = () => {
       cardCode: Yup.string().when((values, schema) =>
         payWithCard ? schema.required('O campo é obrigatório') : schema
       ),
-      installments: Yup.string().when((values, schema) =>
+      installments: Yup.number().when((values, schema) =>
         payWithCard ? schema.required('O campo é obrigatório') : schema
       )
     }),
@@ -101,7 +103,7 @@ const Checkout = () => {
           email: values.deliveryEmail
         },
         payment: {
-          installments: 1,
+          installments: values.installments,
           card: {
             active: payWithCard,
             code: Number(values.cardCode),
@@ -112,17 +114,15 @@ const Checkout = () => {
               document: values.cardOwner
             },
             expires: {
-              month: 1,
-              year: 2023
+              month: Number(values.expiresMonth),
+              year: Number(values.expiresYear)
             }
           }
         },
-        products: [
-          {
-            id: 1,
-            price: 10
-          }
-        ]
+        products: items.map((item) => ({
+          id: item.id,
+          price: item.prices.current as number
+        }))
       })
     }
   })
@@ -147,6 +147,12 @@ const Checkout = () => {
     }
   }, [totalPrice])
 
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(clear())
+    }
+  }, [dispatch, isSuccess])
+
   const checkInputHasError = (fieldName: string) => {
     const isChanged = fieldName in form.touched
     const isInvalid = fieldName in form.errors
@@ -155,9 +161,10 @@ const Checkout = () => {
     return hasError
   }
 
-  if (items.length === 0) {
+  if (items.length === 0 && isSuccess === false) {
     return <Navigate to={'/'} />
   }
+
   return (
     <div className="container">
       {isSuccess && data ? (
@@ -345,24 +352,29 @@ const Checkout = () => {
                     </InputGroup>
                     <InputGroup>
                       <label htmlFor="cardNumber">Número do cartão</label>
-                      <input
+                      <InputMask
                         type="text"
                         id="cardNumber"
                         name="cardNumber"
                         value={form.values.cardNumber}
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
+                        mask="9999 9999 9999 9999"
+                        className={
+                          checkInputHasError('expiresMonth') ? 'error' : ''
+                        }
                       />
                     </InputGroup>
                     <InputGroup maxWidth="123px">
                       <label htmlFor="expiresMonth">Mês do vencimento</label>
-                      <input
+                      <InputMask
                         type="text"
                         id="expiresMonth"
                         name="expiresMonth"
                         value={form.values.expiresMonth}
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
+                        mask="99"
                         className={
                           checkInputHasError('expiresMonth') ? 'error' : ''
                         }
@@ -370,13 +382,14 @@ const Checkout = () => {
                     </InputGroup>
                     <InputGroup maxWidth="123px">
                       <label htmlFor="expiresYear">Ano do vencimento</label>
-                      <input
+                      <InputMask
                         type="text"
                         id="expiresYear"
                         name="expiresYear"
                         value={form.values.expiresYear}
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
+                        mask="99"
                         className={
                           checkInputHasError('expiresYear') ? 'error' : ''
                         }
@@ -384,13 +397,15 @@ const Checkout = () => {
                     </InputGroup>
                     <InputGroup maxWidth="48px">
                       <label htmlFor="cardCode">CVV</label>
-                      <input
+                      <InputMask
                         type="text"
                         id="cardCode"
                         name="cardCode"
                         value={form.values.cardCode}
                         onChange={form.handleChange}
                         onBlur={form.handleBlur}
+                        placeholder="CVV"
+                        mask="999"
                         className={
                           checkInputHasError('cardCode') ? 'error' : ''
                         }
@@ -411,7 +426,7 @@ const Checkout = () => {
                         }
                       >
                         {installments.map((item) => (
-                          <option key={item.amount}>
+                          <option value={item.quantity} key={item.amount}>
                             {item.quantity}x de {item.formattedAmount}
                           </option>
                         ))}
